@@ -9,11 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.museumapp.R;
 import com.example.museumapp.bean.User;
+import com.example.museumapp.bean.greendao.DatabaseManager;
+import com.example.museumapp.bean.greendao.UserDao;
 import com.example.museumapp.utils.DialogManager;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 public class LoginActivity extends AppCompatActivity {
     private final int REQUEST_CODE = 0;
@@ -21,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText input_pwd;
     private Button login_btn;
     private TextView sign_up_tv;
+    private User db_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         else if(isExist(user.getId())){
             //TODO 读取数据库 获取密码
-            String pwd = "123456";
+            String pwd = db_user.getPwd();
             if(user.getPwd().equals(pwd)){
                 //登陆成功，跳转到主界面
                 Intent intent = new Intent(LoginActivity.this, MainPageActivity.class);
@@ -96,7 +100,15 @@ public class LoginActivity extends AppCompatActivity {
      * @return 是否存在该用户
      */
     private boolean isExist(String id) {
-        return true;
+        QueryBuilder<User> result = DatabaseManager.getInstance().getUserDao().queryBuilder();
+        result = result.where(UserDao.Properties.Id.eq(id));
+        if (!result.list().isEmpty()){
+            db_user = result.list().get(0);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     @Override

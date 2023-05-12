@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".view.MainPageActivity">
 
+
+
     <LinearLayout
         android:id="@+id/main_page_layout"
         android:layout_width="match_parent"

@@ -10,7 +10,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.museumapp.R;
+import com.example.museumapp.bean.User;
+import com.example.museumapp.bean.greendao.DatabaseManager;
+import com.example.museumapp.bean.greendao.UserDao;
 import com.example.museumapp.utils.DialogManager;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 public class SignUpActivity extends AppCompatActivity {
     private EditText input_id;
@@ -61,13 +66,13 @@ public class SignUpActivity extends AppCompatActivity {
         else if(!isExist(id)){
             //用户名未被注册，注册合法
             if(pwd.equals(confirm)){
-                Toast.makeText(this, "注册成功！", Toast.LENGTH_SHORT).show();
-                //TODO 插入数据库操作
-
+                //插入数据库操作
+                DatabaseManager.getInstance().getUserDao().insert(new User(id, pwd));
                 //返回登录界面
                 Intent intent = new Intent();
                 intent.putExtra("user_id", id);
                 setResult(RESULT_OK, intent);
+                Toast.makeText(this, "注册成功！", Toast.LENGTH_SHORT).show();
                 finish();
             }
             else {
@@ -85,6 +90,14 @@ public class SignUpActivity extends AppCompatActivity {
      * @return
      */
     private boolean isExist(String id){
-        return false;
+        QueryBuilder<User> result = DatabaseManager.getInstance().getUserDao().queryBuilder();
+        result = result.where(UserDao.Properties.Id.eq(id));
+
+        if(result.list().isEmpty()){
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }

@@ -68,9 +68,9 @@ public class MainPageActivity extends AppCompatActivity {
         fragmentList = new ArrayList<>();
 
         fragmentList.add(new MainPageFragment());
-        fragmentList.add(new CpFragment());
-        fragmentList.add(new NewsFragment());
-        fragmentList.add(new OrderFragment());
+        fragmentList.add(new CpFragment(this));
+        fragmentList.add(new NewsFragment(this));
+        fragmentList.add(new OrderFragment(user_id));
     }
 
     /**
